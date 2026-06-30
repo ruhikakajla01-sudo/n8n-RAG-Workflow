@@ -119,6 +119,6 @@ The AI Agent is configured to:
 
 ## Author
 
-Ruhi
+Ruhika Kajla
 
 AI Automation | n8n Developer | Digital Marketing Automation
