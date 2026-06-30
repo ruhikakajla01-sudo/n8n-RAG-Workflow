@@ -122,3 +122,7 @@ The AI Agent is configured to:
 Ruhika Kajla
 
 AI Automation | n8n Developer | Digital Marketing Automation
+
+## workflow Screenshoot
+<img width="1366" height="609" alt="RAG Automation" src="https://github.com/user-attachments/assets/ba7764f4-cad7-4e4a-b5e8-1ba0475e9f6d" />
+
