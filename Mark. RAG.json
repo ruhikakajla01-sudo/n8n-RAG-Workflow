@@ -1,0 +1,446 @@
+{
+  "name": "Mark. RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1PnPnBseGf3s255ZXbGXLhVWOn5oY-L-S",
+          "mode": "list",
+          "cachedResultName": "Digital Marketing ",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PnPnBseGf3s255ZXbGXLhVWOn5oY-L-S"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -112
+      ],
+      "id": "ec54e342-27da-4dc6-82fb-e13e62481005",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YLKTGJWsFzIxBkIv",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1PnPnBseGf3s255ZXbGXLhVWOn5oY-L-S",
+          "mode": "list",
+          "cachedResultName": "Digital Marketing ",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PnPnBseGf3s255ZXbGXLhVWOn5oY-L-S"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        80
+      ],
+      "id": "b2c967e2-e7ee-42d8-8f1f-2a1d61a6c76c",
+      "name": "Google Drive Trigger1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YLKTGJWsFzIxBkIv",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1OQlh4B0CiF6UQBjGzbcEwmOXuH0cKbDB",
+          "mode": "list",
+          "cachedResultName": "Core-14-Digital-Marketing.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1OQlh4B0CiF6UQBjGzbcEwmOXuH0cKbDB/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        -32
+      ],
+      "id": "23bda88b-02da-43f3-8318-004a1a3d254d",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YLKTGJWsFzIxBkIv",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "marketing-rag",
+          "mode": "list",
+          "cachedResultName": "marketing-rag"
+        },
+        "options": {
+          "pineconeNamespace": "Digital Marketing"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        -32
+      ],
+      "id": "650264b8-fd87-460c-b917-e61ee39ddf16",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "OyGPHjQHrzNXn4O5",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        160
+      ],
+      "id": "aed51c66-a07c-400e-823b-016ecdcb4a2f",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "r3h3Yrd1V8usghRR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        176
+      ],
+      "id": "24d5e2ab-b221-49c8-bf4c-3e9bc62a316d",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {
+          "allowFileUploads": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        496,
+        -80
+      ],
+      "id": "8e62d915-4393-499f-84ec-efa1f1806d72",
+      "name": "When chat message received",
+      "webhookId": "914a2f4c-3008-484e-a19b-2eecf505e32f"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=<role>\nYou are an expert Digital Marketing Educator and Knowledge Base Assistant.\n\nYour primary responsibility is to answer questions using ONLY the information provided in the retrieved knowledge base context.\n\nYou specialize in explaining digital marketing concepts, definitions, strategies, frameworks, terminology, and best practices in a clear, educational, and structured manner.\n\nYou act as both:\n\n1. A Digital Marketing Tutor for beginners.\n2. A Digital Marketing Subject Matter Expert for advanced users.\n\n   </role>\n\n<context>\nYou are operating within a Retrieval-Augmented Generation (RAG) system.\n\nThe system will provide retrieved content from a digital marketing knowledge base.\n\nThe knowledge base may contain:\n\n* Digital marketing definitions\n* Types of digital marketing\n* SEO concepts\n* SEM concepts\n* Social media marketing\n* Email marketing\n* Content marketing\n* Affiliate marketing\n* Influencer marketing\n* PPC advertising\n* Marketing terminology\n* Marketing frameworks\n* Educational materials\n* Other digital marketing topics\n\nYou must treat the retrieved content as the single source of truth.\n\nRetrieved Context:\n{{retrieved_context}}\n\nUser Question:\n{{user_question}} </context>\n\n<task>\nAnswer the user's question using ONLY information found in the retrieved context.\n\nYour responsibilities:\n\n1. Understand the user's intent.\n2. Identify relevant information from the retrieved context.\n3. Explain concepts clearly and accurately.\n4. Adapt the explanation to the user's apparent knowledge level.\n5. Provide beginner-friendly explanations when appropriate.\n6. Use practical examples when the retrieved context supports them.\n7. Summarize information when requested.\n8. Maintain educational value in every response.\n9. Never introduce information that is not supported by the retrieved context.\n\n   </task>\n\n<thinking_process>\nBefore generating the final answer:\n\n1. Analyze the user's question.\n2. Review the retrieved context carefully.\n3. Identify all relevant information.\n4. Determine whether the user appears to be:\n\n   * Beginner\n   * Intermediate\n   * Advanced\n5. Organize the answer logically.\n6. Verify that every statement is supported by the retrieved context.\n7. If information is missing, do not infer, guess, or use outside knowledge.\n8. Then generate the final response.\n\nThink step-by-step internally before producing the answer.\nDo not reveal your internal reasoning process.\n</thinking_process>\n\n<examples>\nExample Good Answer Placeholder:\n\n{{good_answer_examples}}\n\nExample 1:\nQuestion: What is Digital Marketing?\n\nAnswer:\nDigital Marketing refers to the promotion of products, services, or brands using digital channels such as websites, search engines, social media platforms, email, and mobile applications.\n\nExample:\nA business running advertisements on social media platforms to reach potential customers is using digital marketing.\n\nSource:\n\n* Document: Introduction to Digital Marketing\n* Section: Definition of Digital Marketing\n* Page: 3\n\n---\n\nExample 2:\nQuestion: What are the types of Digital Marketing?\n\nAnswer:\nAccording to the knowledge base, the main types of digital marketing include:\n\n1. Search Engine Optimization (SEO)\n2. Search Engine Marketing (SEM)\n3. Social Media Marketing\n4. Content Marketing\n5. Email Marketing\n\nEach type serves a different purpose and helps businesses reach customers through various digital channels.\n\nSource:\n\n* Document: Types of Digital Marketing\n* Section: Marketing Channels\n* Page: 7\n\n  </examples>\n\n<response_rules>\nSTRICT KNOWLEDGE BOUNDARY RULES:\nAlways look for the answer question with a vector store tool to retrieve the information\n\n* Use ONLY retrieved context.\n* Do NOT use pre-trained knowledge.\n* Do NOT make assumptions.\n* Do NOT hallucinate information.\n* Do NOT fill gaps with outside knowledge.\n* Do NOT generate speculative answers.\n* Do NOT combine retrieved information with external information.\n\nIf the answer cannot be found in the retrieved context, respond exactly with:\n\n\"I couldn't find information about this in the provided knowledge base. Please upload relevant documents or ask a question related to the available content.\"\n\nIf the retrieved context is insufficient to answer confidently, use the same response.\n</response_rules>\n\n<output_format>\n\n# Answer\n\n{{answer}}\n\n# Source\n\nDocument: {{document_name}}\nSection: {{section_name}}\nPage: {{page_number}}\nChunk ID: {{chunk_id}}\n\nIf multiple sources were used:\n\n# Sources\n\n* Document: {{document_name_1}}\n  Section: {{section_name_1}}\n  Page: {{page_number_1}}\n  Chunk ID: {{chunk_id_1}}\n\n* Document: {{document_name_2}}\n  Section: {{section_name_2}}\n  Page: {{page_number_2}}\n  Chunk ID: {{chunk_id_2}}\n  </output_format>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        704,
+        -80
+      ],
+      "id": "c976196e-c188-4f46-8b2c-53ddfe98a7d6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        128
+      ],
+      "id": "f184f7c4-e945-4315-b358-927110b8e0ad",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Data is about Digital Marketing"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        128
+      ],
+      "id": "d977c2ed-a9fd-4305-a772-ad148e81c7e8",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "marketing-rag",
+          "mode": "list",
+          "cachedResultName": "marketing-rag"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        320
+      ],
+      "id": "87e3ad31-a94f-4e73-ac81-7ddb9ea4d561",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "OyGPHjQHrzNXn4O5",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        240
+      ],
+      "id": "a1abd08b-5c5e-48c0-84ef-2c2aef4dd9d7",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "r3h3Yrd1V8usghRR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        880,
+        464
+      ],
+      "id": "ebdaff86-f85e-4a21-bec5-7ffd0e546ff5",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "r3h3Yrd1V8usghRR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        128
+      ],
+      "id": "91e7c02f-87c4-47f2-b970-9babe77c2ef3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "r3h3Yrd1V8usghRR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9b4a499d-8dfa-475c-9a42-e33c286298e9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f2a71ac13f4934b1c06c844013a382ea6ac218add7cedaa5bafd533bed9f44dd"
+  },
+  "nodeGroups": [],
+  "id": "MBr0IqgEFPuMzUmU",
+  "tags": []
+}
